@@ -1,6 +1,6 @@
 # [00_Intro_Python](https://colab.research.google.com/drive/13HoZQsMROxKkld88sPPwYioDIkpHiv-R)
 
-## Programming Challenges
+## Problems Solution
 
 1. **Add Two Numbers**  
   
