@@ -1,6 +1,6 @@
-# 🚀 [01_expressions](https://colab.research.google.com/github/aliza-moin18/Python_Homework_Project/blob/main/01_expressions.ipynb#scrollTo=65vYHEWrMiMy)
+# [01_expressions](https://colab.research.google.com/github/aliza-moin18/Python_Homework_Project/blob/main/01_expressions.ipynb#scrollTo=65vYHEWrMiMy)
 
-## Programming Challenges
+## Problems Solution
 
 1. **Dice Simulator**  
    
