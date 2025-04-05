@@ -1,48 +1,67 @@
+import streamlit as st
 from PIL import Image, ImageEnhance, ImageFilter
-import os
 
-# Define the path to your single image
-image_path = r"D:\25 Projects Python\Project17_Photo\butterfly.jpg"  # Update this to your image file location
+st.set_page_config(page_title="Image Filter App 🎨", layout="centered")
+st.title("🎨 Image Filter App by Aliza Moin")
+st.markdown("Upload an image and play with filters!")
 
-# Check if the file exists at the specified path
-if not os.path.exists(image_path):
-    print(f"Error: The file at {image_path} does not exist.")
-else:
-    # Load the image
-    image = Image.open(image_path)
+uploaded_file = st.file_uploader("📤 Upload an Image", type=["jpg", "jpeg", "png"])
 
-    # Convert to grayscale
-    gray_image = image.convert("L")
+if uploaded_file:
+    image = Image.open(uploaded_file)
+    st.image(image, caption="Original Image", use_column_width=True)
 
-    # Apply blur filter
-    blurred_image = image.filter(ImageFilter.BLUR)
+    st.markdown("---")
+    st.subheader("✨ Apply Filters")
 
-    # Adjust brightness (1.5 times brighter)
-    brightness_enhancer = ImageEnhance.Brightness(image)
-    bright_image = brightness_enhancer.enhance(1.5)
+    # Filters toggles
+    apply_gray = st.checkbox("Grayscale")
+    apply_blur = st.checkbox("Blur")
+    apply_brightness = st.checkbox("Brightness")
+    apply_contrast = st.checkbox("Contrast")
+    apply_saturation = st.checkbox("Saturation")
+    apply_darken = st.checkbox("Darken")
+    apply_edges = st.checkbox("Edge Detection")
 
-    # Adjust contrast (1.8 times higher contrast)
-    contrast_enhancer = ImageEnhance.Contrast(image)
-    contrast_image = contrast_enhancer.enhance(1.8)
+    # Sliders
+    blur_level = st.slider("🔆 Blur Level", 0.0, 10.0, 2.0) if apply_blur else None
+    brightness_factor = st.slider("🌞 Brightness", 0.5, 3.0, 1.0) if apply_brightness else None
+    contrast_factor = st.slider("🎛 Contrast", 0.5, 3.0, 1.0) if apply_contrast else None
+    saturation_level = st.slider("🌈 Saturation", 0.0, 3.0, 1.0) if apply_saturation else None
+    darken_factor = st.slider("🌑 Darken Level", 0.0, 1.0, 1.0) if apply_darken else None
 
-    # Generate new image names based on the original file name
-    base_name = os.path.splitext(os.path.basename(image_path))[0]
-    gray_image_path = f"{base_name}_gray.jpg"
-    blurred_image_path = f"{base_name}_blur.jpg"
-    bright_image_path = f"{base_name}_bright.jpg"
-    contrast_image_path = f"{base_name}_contrast.jpg"
+    if st.button("✨ Apply Filters"):
+        edited_image = image
 
-    # Save the edited images
-    gray_image.save(gray_image_path)
-    blurred_image.save(blurred_image_path)
-    bright_image.save(bright_image_path)
-    contrast_image.save(contrast_image_path)
+        if apply_gray:
+            edited_image = edited_image.convert("L")
+        
+        if apply_blur:
+            edited_image = edited_image.filter(ImageFilter.GaussianBlur(blur_level))
 
-    # Show all the images
-    image.show(title="Original Image")
-    gray_image.show(title="Grayscale Image")
-    blurred_image.show(title="Blurred Image")
-    bright_image.show(title="Brighter Image")
-    contrast_image.show(title="High Contrast Image")
+        if apply_brightness:
+            enhancer = ImageEnhance.Brightness(edited_image)
+            edited_image = enhancer.enhance(brightness_factor)
 
-    print(f"✅ Image processing complete for {image_path}! Check your directory for the new images.")
+        if apply_contrast:
+            enhancer = ImageEnhance.Contrast(edited_image)
+            edited_image = enhancer.enhance(contrast_factor)
+
+        if apply_saturation:
+            enhancer = ImageEnhance.Color(edited_image)
+            edited_image = enhancer.enhance(saturation_level)
+
+        if apply_darken:
+            enhancer = ImageEnhance.Brightness(edited_image)
+            edited_image = enhancer.enhance(darken_factor)
+
+        if apply_edges:
+            edited_image = edited_image.filter(ImageFilter.FIND_EDGES)
+
+        st.image(edited_image, caption="Edited Image", use_column_width=True)
+        st.success("✅ Filters applied!")
+
+        # Save & download
+        edited_image.save("edited_image.jpg")
+        with open("edited_image.jpg", "rb") as file:
+            st.download_button("📥 Download Edited Image", file, file_name="filtered_image.jpg")
